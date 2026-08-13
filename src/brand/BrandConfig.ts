@@ -15,6 +15,8 @@ import type { ColorState } from './TokenResolver'
 import appIconDefault from '../assets/app-icon.png'
 import authBgPhoneDefault from '../assets/auth-bg-phone.png'
 import navDrawerBgDefault from '../assets/nav-drawer-bg.png'
+import mainBannerDefault from '../assets/figma-screens/main-banner-default.png'
+import webHomeBannerDefault from '../assets/web-screens/home-banner-default.png'
 import logoWhiteRuDefault from '../assets/logo-large-white-ru.svg'
 
 export type AssetFit = 'scale' | 'cover'
@@ -40,16 +42,15 @@ export interface AssetSlot {
  * prepared — слот и источник есть, но ни один экран MVP его не рендерит;
  * planned  — только архитектура, источник не определён.
  */
-export type AssetStatus = 'active' | 'prepared' | 'planned'
+export type AssetStatus = 'active'
 
 export type AssetPath =
   | 'appIcon'
   | 'logo.largeWhiteRu'
+  | 'background.mainBanner'
+  | 'background.webHomeBanner'
   | 'background.navigationDrawer'
   | 'background.authPhone'
-  | 'banner.mobile'
-  | 'banner.web'
-  | 'certificate.main'
 
 export interface BrandConfig {
   readonly schemaVersion: '2.1-tokens'
@@ -59,14 +60,11 @@ export interface BrandConfig {
     appIcon: AssetSlot
     logo: { largeWhiteRu: AssetSlot }
     background: {
+      mainBanner: AssetSlot
+      webHomeBanner: AssetSlot
       navigationDrawer: AssetSlot
       authPhone: AssetSlot
     }
-    banner: {
-      mobile: AssetSlot
-      web: AssetSlot
-    }
-    certificate: { main: AssetSlot }
   }
   /**
    * Значения цветовых токенов: id из каталога `tokens.ts` -> HEX.
@@ -101,6 +99,24 @@ export const DEFAULT_BRAND_CONFIG: BrandConfig = {
       },
     },
     background: {
+      mainBanner: {
+        src: mainBannerDefault,
+        format: 'png',
+        intrinsicWidth: 343,
+        intrinsicHeight: 343,
+        fit: 'cover',
+        figmaNodeId: '6135:66705',
+        figmaComponentName: 'Banner',
+      },
+      webHomeBanner: {
+        src: webHomeBannerDefault,
+        format: 'png',
+        intrinsicWidth: 1024,
+        intrinsicHeight: 400,
+        fit: 'cover',
+        figmaNodeId: '6759:41703',
+        figmaComponentName: 'Banner / Web home',
+      },
       navigationDrawer: {
         src: navDrawerBgDefault,
         format: 'png',
@@ -120,38 +136,6 @@ export const DEFAULT_BRAND_CONFIG: BrandConfig = {
         figmaComponentName: 'Background Authorization / Phone',
       },
     },
-    // Слоты ниже добавлены по бизнес-требованию, а НЕ по аннотации 3655:11.
-    banner: {
-      mobile: {
-        src: '',
-        format: 'png',
-        intrinsicWidth: 343,
-        intrinsicHeight: 343,
-        fit: 'cover',
-        figmaNodeId: '6135:66705',
-        figmaComponentName: 'Banner',
-      },
-      web: {
-        src: '',
-        format: 'png',
-        intrinsicWidth: 0,
-        intrinsicHeight: 0,
-        fit: 'cover',
-        figmaNodeId: '',
-        figmaComponentName: '',
-      },
-    },
-    certificate: {
-      main: {
-        src: '',
-        format: 'png',
-        intrinsicWidth: 0,
-        intrinsicHeight: 0,
-        fit: 'cover',
-        figmaNodeId: '',
-        figmaComponentName: '',
-      },
-    },
   },
   colors: { ...DEFAULT_COLORS },
 }
@@ -161,10 +145,9 @@ export function slotAt(cfg: BrandConfig, path: AssetPath): AssetSlot {
   switch (path) {
     case 'appIcon': return cfg.assets.appIcon
     case 'logo.largeWhiteRu': return cfg.assets.logo.largeWhiteRu
+    case 'background.mainBanner': return cfg.assets.background.mainBanner
+    case 'background.webHomeBanner': return cfg.assets.background.webHomeBanner
     case 'background.navigationDrawer': return cfg.assets.background.navigationDrawer
     case 'background.authPhone': return cfg.assets.background.authPhone
-    case 'banner.mobile': return cfg.assets.banner.mobile
-    case 'banner.web': return cfg.assets.banner.web
-    case 'certificate.main': return cfg.assets.certificate.main
   }
 }

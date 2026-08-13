@@ -17,7 +17,7 @@ import { FIGMA_STYLES, RENDER_CONSTANTS, cssVarName, constVarName } from './toke
  */
 const LEGACY_ALIASES: Record<string, string> = {
   '--brand-primary': 'primary',
-  '--brand-on-primary': 'authorizationButtonText',
+  '--brand-on-primary': 'authorizationTextHighEmphasis',
   '--brand-on-auth-background': 'authorizationTextMediumEmphasis',
   '--brand-auth-progress': 'progressBar',
 }

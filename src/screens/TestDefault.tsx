@@ -56,17 +56,18 @@ export default function TestDefault() {
                 style={{
                   position: 'relative', display: 'block', width: 343, height: 58, marginBottom: 8,
                   borderRadius: 8, cursor: 'pointer', textAlign: 'left', background: FIXED.surface,
-                  border: on ? '2px solid var(--brand-primary)' : `1px solid ${FIXED.divider}`,
+                  border: on ? '2px solid var(--c-additional)' : `1px solid ${FIXED.divider}`,
+                  boxShadow: on ? 'inset 0 0 0 999px var(--c-inactive)' : 'none',
                   fontFamily: 'inherit', padding: 0,
                 }}
               >
                 <span style={{
                   position: 'absolute', left: on ? 15 : 16, top: on ? 18 : 19, width: 20, height: 20,
                   borderRadius: '50%',
-                  border: on ? '2px solid var(--brand-primary)' : `1.6px solid ${FIXED.stub}`,
+                  border: on ? '2px solid var(--c-additional)' : `1.6px solid ${FIXED.stub}`,
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                 }}>
-                  {on && <span style={{ width: 10, height: 10, borderRadius: '50%', background: 'var(--brand-primary)' }} />}
+                  {on && <span style={{ width: 10, height: 10, borderRadius: '50%', background: 'var(--c-additional)' }} />}
                 </span>
                 <span style={{
                   position: 'absolute', left: on ? 47 : 48, top: on ? 18 : 19,
@@ -84,7 +85,7 @@ export default function TestDefault() {
       <div style={{ position: 'absolute', left: 0, top: 742, width: 375, height: 70, background: FIXED.surface }} />
       <button style={{
         position: 'absolute', left: 16, top: 744, width: 343, height: 44, borderRadius: 12, border: 'none',
-        background: 'var(--brand-primary)', color: 'var(--brand-on-primary)', cursor: 'pointer',
+        background: 'var(--c-secondary)', color: 'var(--c-authorizationTextHighEmphasis)', cursor: 'pointer',
         fontSize: 15, lineHeight: '20px', letterSpacing: -0.24, fontFamily: 'inherit',
       }}>
         Проверить

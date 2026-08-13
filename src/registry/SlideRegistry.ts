@@ -23,23 +23,17 @@ export interface SlideEntry {
 
 export const SLIDES: SlideEntry[] = [
   {
-    figmaNodeId: '11:104896',
+    figmaNodeId: '8408:34319',
     order: 1,
     badge: null,
     title: 'Эквио',
     subtitle: 'Мобильная платформа для обучения и бизнес-коммуникации',
     layout: 'cover',
-    screenRefs: ['appIconTile', 'splash'],
-    omitted: [
-      {
-        figmaNodeId: '11:21468',
-        name: 'Home (Apple springboard)',
-        reason: 'Excluded by scope correction #1 — replaced by the neutral app-icon tile.',
-      },
-    ],
+    screenRefs: ['home', 'splash'],
+    omitted: [],
   },
   {
-    figmaNodeId: '11:108085',
+    figmaNodeId: '8408:34336',
     order: 2,
     badge: 1,
     title: 'Начальный экран и боковое меню',
@@ -51,16 +45,13 @@ export const SLIDES: SlideEntry[] = [
     ],
   },
   {
-    figmaNodeId: '11:108182',
+    figmaNodeId: '8408:32457',
     order: 3,
     badge: 2,
-    title: 'Прогресс и Профиль',
-    subtitle: 'После авторизации пользователь видит главный экран приложения и информацию о себе',
+    title: 'Главная и профиль',
+    subtitle: 'Стартовая страница с ключевой информацией и персональными данными',
     layout: 'screens-row',
-    screenRefs: ['profile'],
-    omitted: [
-      { figmaNodeId: '6137:110093', name: '1027 — главная с баннером', reason: 'Replaced by scope correction #2 — brand-primary surface unverified.' },
-      { figmaNodeId: '6135:32247', name: '1026 — главная без баннера', reason: 'Not in the validated MVP screen set.' },
-    ],
+    screenRefs: ['mainBanner', 'mainContent', 'profile'],
+    omitted: [],
   },
 ]

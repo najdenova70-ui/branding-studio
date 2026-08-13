@@ -12,11 +12,17 @@ import { resolveAsset, } from '../brand/AssetResolver'
 import { FIXED } from '../brand/TokenResolver'
 import { StatusBar, HomeIndicator } from './chrome'
 import type { ScreenProps } from '../registry/types'
+import DrawerIcon, { type DrawerIconName } from './DrawerIcon'
+import DrawerBackdrop from './DrawerBackdrop'
 
-const MENU = [
-  'Главная', 'Программы обучения', 'Задания', 'Курсы и брифы', 'Видеоканал',
-  'Тесты и опросы', 'База знаний', 'Сообщения', 'Мои результаты', 'Моя команда',
-  'Рейтинги', 'Магазин подарков', 'Настройки',
+const MENU: Array<{ label: string; icon: DrawerIconName }> = [
+  { label: 'Главная', icon: 'dashboard' }, { label: 'Программы обучения', icon: 'programs' },
+  { label: 'Задания', icon: 'tasks' }, { label: 'Курсы и брифы', icon: 'courses' },
+  { label: 'Видеоканал', icon: 'video' }, { label: 'Тесты и опросы', icon: 'tests' },
+  { label: 'База знаний', icon: 'knowledge' }, { label: 'Сообщения', icon: 'message' },
+  { label: 'Мои результаты', icon: 'results' }, { label: 'Моя команда', icon: 'team' },
+  { label: 'Рейтинги', icon: 'rating' }, { label: 'Магазин подарков', icon: 'gift' },
+  { label: 'Настройки', icon: 'settings' },
 ]
 
 export default function NavigationDrawer({ onNavigate }: ScreenProps) {
@@ -26,7 +32,7 @@ export default function NavigationDrawer({ onNavigate }: ScreenProps) {
   return (
     <div style={{ position: 'absolute', inset: 0, background: '#8A8A8E' }}>
       {/* Peek of the underlying screen at x=304 (Figma instance 1027 at 304,0) */}
-      <div style={{ position: 'absolute', left: 304, top: 0, width: 375, height: 812, background: FIXED.surface }} />
+      <div style={{ position: 'absolute', left: 304, top: 0, width: 375, height: 812, background: FIXED.surface }}><DrawerBackdrop /></div>
 
       {/* Drawer panel — 304 wide */}
       <div style={{ position: 'absolute', left: 0, top: 0, width: 304, height: 812, background: FIXED.surface, overflow: 'hidden' }}>
@@ -54,7 +60,7 @@ export default function NavigationDrawer({ onNavigate }: ScreenProps) {
 
         {/* Frame 1 — 13 x `menu / iOS / list item` (304x48) from y=219 */}
         <div style={{ position: 'absolute', left: 0, top: 219, width: 304 }}>
-          {MENU.map((label, i) => (
+          {MENU.map(({ label, icon }, i) => (
             <button
               key={label}
               onClick={() => onNavigate?.(i === 0 ? 'profile' : 'profile')}
@@ -63,10 +69,7 @@ export default function NavigationDrawer({ onNavigate }: ScreenProps) {
                 background: 'none', border: 'none', padding: '0 16px', cursor: 'pointer', fontFamily: 'inherit',
               }}
             >
-              <span style={{
-                position: 'absolute', left: 16, top: 14, width: 20, height: 20, borderRadius: 4,
-                border: `1.6px solid ${FIXED.navbarElement}`, opacity: 0.75,
-              }} />
+              <DrawerIcon name={icon} />
               <span style={{
                 position: 'absolute', left: 52, top: 13, fontSize: 15, lineHeight: '20px',
                 letterSpacing: -0.24, color: FIXED.textHigh,
@@ -75,7 +78,7 @@ export default function NavigationDrawer({ onNavigate }: ScreenProps) {
                 <span style={{
                   position: 'absolute', right: 16, top: 15, height: 18, padding: '0 8px', borderRadius: 9,
                   background: '#D8FE5C', color: '#1A1A1A', fontSize: 11, lineHeight: '18px', fontWeight: 600,
-                }}>NEW</span>
+                }}>+99</span>
               )}
             </button>
           ))}
@@ -90,6 +93,7 @@ export default function NavigationDrawer({ onNavigate }: ScreenProps) {
             borderTop: `1px solid ${FIXED.divider}`,
           }}
         >
+          <DrawerIcon name="logout" />
           <span style={{ position: 'absolute', left: 52, top: 13, fontSize: 15, lineHeight: '20px', letterSpacing: -0.24, color: FIXED.textHigh }}>
             Выйти
           </span>

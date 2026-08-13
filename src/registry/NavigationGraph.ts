@@ -13,6 +13,7 @@ export interface NavEdge {
 }
 
 export const EDGES: NavEdge[] = [
+  { from: 'home', to: 'splash', trigger: 'Открыть приложение', source: 'Settings 11:21496' },
   { from: 'splash', to: 'login', trigger: 'После загрузки', source: 'Spinner-IOS 0:105' },
   { from: 'login', to: 'profile', trigger: 'Войти по логину и паролю', source: 'Buttons / Button - Primary 0:422' },
   { from: 'login', to: 'splash', trigger: 'Назад', source: 'Navbar 0:257' },
@@ -28,7 +29,7 @@ export const PRIMARY_FLOW: ScreenId[] = ['splash', 'login', 'profile', 'drawer']
  * `test` and `appIconTile` are reachable from the screen selector only —
  * no reliable product navigation path exists to either in the audited Figma.
  */
-export const SELECTOR_ONLY: ScreenId[] = ['test', 'appIconTile']
+export const SELECTOR_ONLY: ScreenId[] = ['mainBanner', 'mainContent', 'test', 'appIconTile']
 
 export function edgesFrom(id: ScreenId): NavEdge[] {
   return EDGES.filter((e) => e.from === id)

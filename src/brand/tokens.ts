@@ -21,6 +21,14 @@ export type StyleGroup = 'primaryBrand' | 'authorization' | 'navigation' | 'prod
 
 export const EDITABLE_GROUPS: StyleGroup[] = ['primaryBrand', 'authorization', 'navigation', 'productStates']
 
+/** Единственные стили, которые разрешено менять в узком branding-сценарии. */
+export const BRANDABLE_STYLE_KEYS = new Set([
+  'primary', 'additional', 'inactive', 'secondary',
+  'authorizationButton', 'authorizationButtonText',
+  'authorizationTextHighEmphasis', 'authorizationTextMediumEmphasis',
+  'progressBar', 'progressBarBackground',
+])
+
 export interface FigmaColorStyle {
   /** Имя стиля в Figma, 1:1. */
   name: string
@@ -54,11 +62,11 @@ export const FIGMA_STYLES: FigmaColorStyle[] = [
     description: 'Этот цвет используется для плашки на главной странице',
   },
   {
-    name: 'additional', key: 'additional', hex: '#334057', group: 'primaryBrand', wired: false,
+    name: 'additional', key: 'additional', hex: '#334057', group: 'primaryBrand', wired: true,
     description: 'Этот цвет используется для выбора варианта ответа в тесте или опросе. В большинстве случаев красится в такой же цвет как и primary',
   },
   {
-    name: 'inactive', key: 'inactive', hex: '#33405714', group: 'primaryBrand', wired: false,
+    name: 'inactive', key: 'inactive', hex: '#33405714', group: 'primaryBrand', wired: true,
     description: 'Используется в качестве подложки для отображения неактивного элемента и отображается под текстом в опросах и тестах',
   },
   {
@@ -70,7 +78,7 @@ export const FIGMA_STYLES: FigmaColorStyle[] = [
     description: 'Используется для выделения юзера в рейтинге, а также для всех выделений элементов. В большинстве случаев красится в такой же цвет как и primary',
   },
   {
-    name: 'secondary', key: 'secondary', hex: '#334057', group: 'primaryBrand', wired: false,
+    name: 'secondary', key: 'secondary', hex: '#334057', group: 'primaryBrand', wired: true,
     description: 'Этот цвет используется для кнопок',
   },
   {
@@ -80,7 +88,7 @@ export const FIGMA_STYLES: FigmaColorStyle[] = [
 
   // ── Authorization ───────────────────────────────────────────────────────
   {
-    name: 'authorizationButton', key: 'authorizationButton', hex: '#334057', group: 'authorization', wired: false,
+    name: 'authorizationButton', key: 'authorizationButton', hex: '#334057', group: 'authorization', wired: true,
     description: 'Этот цвет отвечает за цвет кнопок, сейчас красим его в цвет secondary (исключения — сборки с дизайном кнопок на странице авторизации поверх фона)',
   },
   {
@@ -129,7 +137,7 @@ export const FIGMA_STYLES: FigmaColorStyle[] = [
   { name: 'overlay', key: 'overlay', hex: '#00000080', group: 'reference', wired: false, description: '' },
   {
     name: 'authorizationTextHighEmphasis', key: 'authorizationTextHighEmphasis', hex: '#FFFFFF',
-    group: 'reference', wired: false, description: '',
+    group: 'reference', wired: true, description: '',
   },
   {
     name: 'authorizationTextMediumEmphasis', key: 'authorizationTextMediumEmphasis', hex: '#FFFFFFCC',
@@ -201,7 +209,7 @@ export function stylesInGroup(g: StyleGroup): FigmaColorStyle[] {
 /** Можно ли править стиль из Студии. Reference-стили — только просмотр. */
 export function isEditable(key: string): boolean {
   const s = STYLES_BY_KEY[key]
-  return !!s && s.group !== 'reference' && !s.gradient
+  return !!s && BRANDABLE_STYLE_KEYS.has(key) && !s.gradient
 }
 
 /** CSS-переменная Figma-стиля: primary -> --c-primary */
