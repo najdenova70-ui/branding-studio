@@ -4,6 +4,8 @@
  * `iOS / Home Indicator / 1. iPhone X · Default`, `Navigation Bar`.
  */
 import { FIXED } from '../brand/TokenResolver'
+import wifiWhite from '../assets/presentation/wifi-white.svg'
+import wifiBlack from '../assets/presentation/wifi-black.svg'
 
 export function StatusBar({ time = '17:57', light = false }: { time?: string; light?: boolean }) {
   const c = light ? '#FFFFFF' : FIXED.textHigh
@@ -20,9 +22,7 @@ export function StatusBar({ time = '17:57', light = false }: { time?: string; li
             <rect key={i} x={i * 4.5} y={8 - i * 2.4} width="3" height={3 + i * 2.4} rx="0.8" fill={c} />
           ))}
         </svg>
-        <svg width="16" height="11" viewBox="0 0 16 11" aria-hidden>
-          <path d="M8 9.5 1 3.2a10 10 0 0 1 14 0Z" fill="none" stroke={c} strokeWidth="1.6" />
-        </svg>
+        <img src={light ? wifiWhite : wifiBlack} width={light ? 17.5 : 15.3} height={light ? 12.6 : 11} alt="" />
         <svg width="25" height="12" viewBox="0 0 25 12" aria-hidden>
           <rect x="0.5" y="0.5" width="21" height="11" rx="3" fill="none" stroke={c} opacity="0.4" />
           <rect x="2" y="2" width="18" height="8" rx="1.7" fill={c} />

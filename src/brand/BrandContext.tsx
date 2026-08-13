@@ -6,13 +6,14 @@ import { DEFAULT_COLORS, isEditable } from './tokens'
 interface BrandContextValue {
   config: BrandConfig
   cssVars: Record<string, string>
-  setDisplayName: (v: string) => void
+  readOnly: boolean
   /** tokenId — идентификатор из каталога tokens.ts. */
   setColor: (tokenId: string, value: string) => void
   resetColor: (tokenId: string) => void
   resetAllColors: () => void
   setAsset: (path: AssetPath, src: string) => void
   resetAsset: (path: AssetPath) => void
+  setDisplayName: (value: string) => void
 }
 
 const Ctx = createContext<BrandContextValue | null>(null)
@@ -25,14 +26,11 @@ function cloneConfig(cfg: BrandConfig): BrandConfig {
       appIcon: { ...cfg.assets.appIcon },
       logo: { largeWhiteRu: { ...cfg.assets.logo.largeWhiteRu } },
       background: {
+        mainBanner: { ...(cfg.assets.background.mainBanner ?? DEFAULT_BRAND_CONFIG.assets.background.mainBanner) },
+        webHomeBanner: { ...(cfg.assets.background.webHomeBanner ?? DEFAULT_BRAND_CONFIG.assets.background.webHomeBanner) },
         navigationDrawer: { ...cfg.assets.background.navigationDrawer },
         authPhone: { ...cfg.assets.background.authPhone },
       },
-      banner: {
-        mobile: { ...cfg.assets.banner.mobile },
-        web: { ...cfg.assets.banner.web },
-      },
-      certificate: { main: { ...cfg.assets.certificate.main } },
     },
     colors: { ...cfg.colors },
   }
@@ -44,31 +42,38 @@ function withSlotSrc(cfg: BrandConfig, path: AssetPath, src: string): BrandConfi
   return next
 }
 
-export function BrandProvider({ children }: { children: ReactNode }) {
-  const [config, setConfig] = useState<BrandConfig>(DEFAULT_BRAND_CONFIG)
+export function BrandProvider({
+  children, initialConfig = DEFAULT_BRAND_CONFIG, readOnly = false,
+}: {
+  children: ReactNode
+  initialConfig?: BrandConfig
+  readOnly?: boolean
+}) {
+  const [config, setConfig] = useState<BrandConfig>(() => cloneConfig(initialConfig))
 
   const value = useMemo<BrandContextValue>(() => ({
     config,
     cssVars: resolveTokens(config.colors),
-    setDisplayName: (v) => setConfig((c) => ({ ...cloneConfig(c), displayName: v })),
+    readOnly,
     // Reference-стили доступны только для просмотра — запись отклоняется здесь,
     // а не только пряча контрол в UI.
     setColor: (tokenId, v) => setConfig((c) => {
-      if (!isEditable(tokenId)) return c
+      if (readOnly || !isEditable(tokenId)) return c
       const next = cloneConfig(c)
       next.colors[tokenId] = v
       return next
     }),
     resetColor: (tokenId) => setConfig((c) => {
-      if (!isEditable(tokenId)) return c
+      if (readOnly || !isEditable(tokenId)) return c
       const next = cloneConfig(c)
       next.colors[tokenId] = DEFAULT_COLORS[tokenId]
       return next
     }),
-    resetAllColors: () => setConfig((c) => ({ ...cloneConfig(c), colors: { ...DEFAULT_COLORS } })),
-    setAsset: (path, src) => setConfig((c) => withSlotSrc(c, path, src)),
-    resetAsset: (path) => setConfig((c) => withSlotSrc(c, path, slotAt(DEFAULT_BRAND_CONFIG, path).src)),
-  }), [config])
+    resetAllColors: () => !readOnly && setConfig((c) => ({ ...cloneConfig(c), colors: { ...DEFAULT_COLORS } })),
+    setAsset: (path, src) => !readOnly && setConfig((c) => withSlotSrc(c, path, src)),
+    resetAsset: (path) => !readOnly && setConfig((c) => withSlotSrc(c, path, slotAt(DEFAULT_BRAND_CONFIG, path).src)),
+    setDisplayName: (displayName) => !readOnly && setConfig((c) => ({ ...cloneConfig(c), displayName: displayName.slice(0, 30) })),
+  }), [config, readOnly])
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>
 }

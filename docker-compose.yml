@@ -1,0 +1,32 @@
+services:
+  share-api:
+    build:
+      context: .
+      dockerfile: server/Dockerfile
+    environment:
+      SHARE_TTL_DAYS: ${SHARE_TTL_DAYS:-30}
+      SHARE_MAX_RECORDS: ${SHARE_MAX_RECORDS:-2000}
+      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-}
+    volumes:
+      - share-data:/data
+    restart: unless-stopped
+    security_opt: [no-new-privileges:true]
+    read_only: true
+    tmpfs: [/tmp]
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "${STUDIO_PORT:-8088}:80"
+    depends_on:
+      share-api:
+        condition: service_healthy
+    restart: unless-stopped
+    security_opt: [no-new-privileges:true]
+    read_only: true
+    tmpfs: [/var/cache/nginx, /var/run]
+
+volumes:
+  share-data:

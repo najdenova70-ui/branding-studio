@@ -12,7 +12,7 @@
 
 import type { AssetPath, AssetStatus } from './BrandConfig'
 
-export type AssetProvenance = 'figma-annotated' | 'business-requirement'
+export type AssetProvenance = 'figma-annotated'
 
 export interface AssetCard {
   path: AssetPath
@@ -32,7 +32,7 @@ export interface AssetCard {
 export const ASSET_CARDS: AssetCard[] = [
   {
     path: 'appIcon',
-    label: 'App Icon',
+    label: 'Иконка приложения',
     description: 'Иконка приложения на устройстве',
     status: 'active',
     provenance: 'figma-annotated',
@@ -41,7 +41,7 @@ export const ASSET_CARDS: AssetCard[] = [
   },
   {
     path: 'background.authPhone',
-    label: 'Splash Background',
+    label: 'Фон заставки',
     description: 'Фон экрана авторизации, телефон',
     status: 'active',
     provenance: 'figma-annotated',
@@ -50,7 +50,7 @@ export const ASSET_CARDS: AssetCard[] = [
   },
   {
     path: 'logo.largeWhiteRu',
-    label: 'Logo',
+    label: 'Логотип',
     description: 'Большой белый логотип, RU',
     status: 'active',
     provenance: 'figma-annotated',
@@ -58,41 +58,30 @@ export const ASSET_CARDS: AssetCard[] = [
     preview: 'wide',
   },
   {
+    path: 'background.mainBanner',
+    label: 'Главный баннер',
+    description: 'Изображение главного баннера; текст и кнопка остаются неизменными',
+    status: 'active',
+    provenance: 'figma-annotated',
+    usedBy: ['Главная — баннер'],
+    preview: 'square',
+  },
+  {
+    path: 'background.webHomeBanner',
+    label: 'Баннер веб-версии',
+    description: 'Изображение главного баннера; текст и кнопки остаются неизменными',
+    status: 'active',
+    provenance: 'figma-annotated',
+    usedBy: ['Веб-версия — Главная'],
+    preview: 'wide',
+  },
+  {
     path: 'background.navigationDrawer',
-    label: 'Navigation Menu Background',
+    label: 'Фон бокового меню',
     description: 'Шапка бокового меню',
     status: 'active',
     provenance: 'figma-annotated',
     usedBy: ['Боковое меню'],
-    preview: 'wide',
-  },
-  {
-    path: 'banner.mobile',
-    label: 'Mobile Banner',
-    description: 'Баннер на главном экране приложения',
-    status: 'prepared',
-    provenance: 'business-requirement',
-    usedBy: [],
-    preview: 'square',
-  },
-  {
-    path: 'banner.web',
-    label: 'Web Banner',
-    description: 'Баннер веб-версии',
-    status: 'planned',
-    provenance: 'business-requirement',
-    usedBy: [],
-    sourceFallback: 'Источник в Figma не определён',
-    preview: 'wide',
-  },
-  {
-    path: 'certificate.main',
-    label: 'Certificate',
-    description: 'Шаблон сертификата о прохождении',
-    status: 'planned',
-    provenance: 'business-requirement',
-    usedBy: [],
-    sourceFallback: 'Источник в Figma не определён',
     preview: 'wide',
   },
 ]
@@ -101,13 +90,5 @@ export const STATUS_META: Record<AssetStatus, { label: string; title: string }> 
   active: {
     label: 'в прототипе',
     title: 'Замена сразу отображается на экранах прототипа',
-  },
-  prepared: {
-    label: 'подготовлен',
-    title: 'Слот и источник в Figma есть, но ни один экран MVP его не рендерит',
-  },
-  planned: {
-    label: 'архитектура',
-    title: 'Определён только слот — источник и место применения ещё не заданы',
   },
 }

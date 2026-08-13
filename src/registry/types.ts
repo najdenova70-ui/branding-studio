@@ -1,4 +1,4 @@
-export type ScreenId = 'appIconTile' | 'splash' | 'login' | 'profile' | 'drawer' | 'test'
+export type ScreenId = 'home' | 'appIconTile' | 'splash' | 'login' | 'profile' | 'drawer' | 'test' | 'mainBanner' | 'mainContent'
 
 export interface ScreenProps {
   onNavigate?: (to: ScreenId) => void
@@ -9,11 +9,18 @@ export type BrandField =
   | 'assets.appIcon'
   | 'assets.logo.largeWhiteRu'
   | 'assets.background.authPhone'
+  | 'assets.background.mainBanner'
   | 'assets.background.navigationDrawer'
   | 'colors.primary'
-  | 'colors.onPrimary'
-  | 'colors.onAuthBackground'
-  | 'colors.authProgress'
+  | 'colors.additional'
+  | 'colors.inactive'
+  | 'colors.secondary'
+  | 'colors.authorizationButton'
+  | 'colors.authorizationButtonText'
+  | 'colors.authorizationTextHighEmphasis'
+  | 'colors.authorizationTextMediumEmphasis'
+  | 'colors.progressBar'
+  | 'colors.progressBarBackground'
 
 export interface ScreenEntry {
   id: ScreenId

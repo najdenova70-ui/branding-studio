@@ -70,7 +70,7 @@ export default function Login({ onNavigate }: ScreenProps) {
         <div style={{ position: 'relative', width: 375, height: 44, marginTop: 12 }}>
           <div style={{
             position: 'absolute', left: 16, top: 0, width: 20.88, height: 20.88, borderRadius: 4,
-            background: 'var(--brand-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center',
+            background: 'var(--c-additional)', display: 'flex', alignItems: 'center', justifyContent: 'center',
           }}>
             <svg width="12" height="9" viewBox="0 0 12 9" aria-hidden>
               <path d="M1 4.5 4.3 8 11 1" fill="none" stroke="var(--brand-on-primary)" strokeWidth="1.8"
@@ -91,7 +91,7 @@ export default function Login({ onNavigate }: ScreenProps) {
             onClick={() => onNavigate?.('profile')}
             style={{
               width: 343, height: 44, borderRadius: 12, border: 'none', cursor: 'pointer',
-              background: 'var(--brand-primary)', color: 'var(--brand-on-primary)',
+              background: 'var(--c-authorizationButton)', color: 'var(--c-authorizationButtonText)',
               fontSize: 15, lineHeight: '20px', letterSpacing: -0.24, fontFamily: 'inherit',
             }}
           >

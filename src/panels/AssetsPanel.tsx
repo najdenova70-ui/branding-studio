@@ -1,23 +1,17 @@
 /** Левая зона — Brand Assets. */
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 import { useBrand } from '../brand/BrandContext'
-import { slotAt, type AssetPath } from '../brand/BrandConfig'
+import { DEFAULT_BRAND_CONFIG, slotAt, type AssetPath } from '../brand/BrandConfig'
 import { ASSET_CARDS, STATUS_META, type AssetCard } from '../brand/assetCatalog'
 
 function BrandIdentity() {
   const { config, setDisplayName } = useBrand()
   return (
     <div className="bs-card bs-card--identity">
-      <label className="bs-card__label" htmlFor="bs-client">Клиент</label>
-      <input
-        id="bs-client"
-        className="bs-input bs-input--lg"
-        type="text"
-        value={config.displayName}
-        placeholder="Название клиента"
-        onChange={(e) => setDisplayName(e.target.value)}
-      />
-      <div className="bs-card__foot"><code>{config.brandId}</code> · schema {config.schemaVersion}</div>
+      <div className="bs-card__label">Клиент</div>
+      <label className="bs-card__label" htmlFor="brand-display-name">Название приложения</label>
+      <input id="brand-display-name" className="bs-name-input" value={config.displayName} maxLength={30} onChange={(event) => setDisplayName(event.target.value)} />
+      <div className="bs-card__foot">Меняется только подпись приложения; остальные тексты экранов зафиксированы</div>
     </div>
   )
 }
@@ -26,9 +20,11 @@ function AssetCardView({ card }: { card: AssetCard }) {
   const { config, setAsset, resetAsset } = useBrand()
   const slot = slotAt(config, card.path)
   const inputRef = useRef<HTMLInputElement>(null)
-  const replaceable = card.status !== 'planned'
+  const [error, setError] = useState('')
+  const replaceable = true
   const hasImage = slot.src.length > 0
-  const isCustom = slot.src.startsWith('blob:')
+  const defaultSrc = slotAt(DEFAULT_BRAND_CONFIG, card.path).src
+  const isCustom = slot.src !== defaultSrc
   const st = STATUS_META[card.status]
 
   const source = slot.figmaNodeId
@@ -56,7 +52,7 @@ function AssetCardView({ card }: { card: AssetCard }) {
           <div className="bs-asset-card__desc">{card.description}</div>
           <div className="bs-asset-card__meta">
             <span>{size}</span>
-            {slot.fit === 'scale' && <span className="bs-lock" title="Figma требует режим Scale">fit: scale 🔒</span>}
+            {slot.fit === 'scale' && <span className="bs-lock" title="Масштабирование зафиксировано макетом">по размеру 🔒</span>}
           </div>
         </div>
       </div>
@@ -65,11 +61,6 @@ function AssetCardView({ card }: { card: AssetCard }) {
 
       <div className="bs-asset-card__foot">
         <span className={'bs-badge bs-badge--' + card.status} title={st.title}>{st.label}</span>
-        {card.provenance === 'business-requirement' && (
-          <span className="bs-badge bs-badge--business" title="Не входит в аннотацию Figma 3655:11 — добавлено по решению команды">
-            вне Figma-аннотации
-          </span>
-        )}
         <span className="bs-asset-card__actions">
           {isCustom && <button className="bs-link" onClick={() => resetAsset(card.path)}>Сброс</button>}
           <button
@@ -78,7 +69,7 @@ function AssetCardView({ card }: { card: AssetCard }) {
             title={replaceable ? undefined : 'Источник ещё не определён'}
             onClick={() => inputRef.current?.click()}
           >
-            Replace
+            Заменить
           </button>
         </span>
       </div>
@@ -86,13 +77,42 @@ function AssetCardView({ card }: { card: AssetCard }) {
       {card.usedBy.length > 0 && (
         <div className="bs-asset-card__used">Экраны: {card.usedBy.join(', ')}</div>
       )}
+      {error && <div className="bs-warn">{error}</div>}
 
       <input
         ref={inputRef} type="file" hidden
-        accept="image/png,image/jpeg,image/svg+xml,image/webp"
+        accept={slot.format === 'svg' ? 'image/svg+xml,.svg' : 'image/png,.png'}
         onChange={(e) => {
           const f = e.target.files?.[0]
-          if (f) setAsset(card.path as AssetPath, URL.createObjectURL(f))
+          if (f) {
+            const expectedType = slot.format === 'svg' ? 'image/svg+xml' : 'image/png'
+            const expectedExtension = `.${slot.format}`
+            if (f.type !== expectedType && !f.name.toLowerCase().endsWith(expectedExtension)) {
+              setError(`Нужен файл в формате ${slot.format.toUpperCase()}.`)
+              e.target.value = ''
+              return
+            }
+            const reader = new FileReader()
+            reader.onload = () => {
+              if (typeof reader.result !== 'string') return
+              const image = new Image()
+              image.onload = () => {
+                const expectedRatio = slot.intrinsicWidth / slot.intrinsicHeight
+                const actualRatio = image.naturalWidth / image.naturalHeight
+                const wrongRatio = slot.format === 'png' && Math.abs(expectedRatio - actualRatio) / expectedRatio > 0.01
+                const tooSmall = slot.format === 'png' && (image.naturalWidth < slot.intrinsicWidth || image.naturalHeight < slot.intrinsicHeight)
+                if (wrongRatio || tooSmall) {
+                  setError(`Файл ${image.naturalWidth} × ${image.naturalHeight}. Нужна пропорция ${slot.intrinsicWidth}:${slot.intrinsicHeight} и размер не меньше ${slot.intrinsicWidth} × ${slot.intrinsicHeight}.`)
+                  return
+                }
+                setError('')
+                setAsset(card.path as AssetPath, reader.result as string)
+              }
+              image.onerror = () => setError('Файл изображения не удалось прочитать.')
+              image.src = reader.result
+            }
+            reader.readAsDataURL(f)
+          }
           e.target.value = ''
         }}
       />
@@ -100,23 +120,22 @@ function AssetCardView({ card }: { card: AssetCard }) {
   )
 }
 
-export default function AssetsPanel() {
-  const active = ASSET_CARDS.filter((c) => c.status === 'active')
-  const rest = ASSET_CARDS.filter((c) => c.status !== 'active')
+export default function AssetsPanel({ paths }: { paths?: AssetPath[] }) {
+  const active = ASSET_CARDS.filter((card) => card.status === 'active' && (!paths || paths.includes(card.path)))
 
   return (
     <div className="bs-zone">
       <div className="bs-zone__head">
-        <h2>Brand Assets</h2>
+        <h2>Фирменные элементы</h2>
         <span className="bs-zone__count">{active.length} из {ASSET_CARDS.length} в прототипе</span>
       </div>
 
-      <BrandIdentity />
+      {!paths && <BrandIdentity />}
+
+      {active.length === 0 && <p className="bs-panel-empty">На этом экране нет заменяемых изображений.</p>}
 
       {active.map((c) => <AssetCardView key={c.path} card={c} />)}
 
-      <div className="bs-zone__divider">Подготовлено к подключению</div>
-      {rest.map((c) => <AssetCardView key={c.path} card={c} />)}
     </div>
   )
 }
