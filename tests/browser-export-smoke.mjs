@@ -100,11 +100,11 @@ try {
     settings: !!document.querySelector('.bs-shell__settings'),
     oldRows: !!document.querySelector('.bs-proto__bar'),
   })`)
-  if (!editorContract.settings || editorContract.oldRows || editorContract.nav.length !== 4) throw new Error(`Editor contract failed: ${JSON.stringify(editorContract)}`)
+  if (!editorContract.settings || editorContract.oldRows || editorContract.nav.length !== 8) throw new Error(`Editor contract failed: ${JSON.stringify(editorContract)}`)
   trace('editor contract')
 
   if (webEvidence) {
-    await evaluate(cdp, `document.querySelectorAll('.bs-workspace-nav button')[0]?.click()`)
+    await evaluate(cdp, `(() => { [...document.querySelectorAll('.bs-workspace-nav button')].find((item) => item.textContent.includes('Веб-версия'))?.click() })()`)
     await delay(300)
     const webContract = await evaluate(cdp, `({ banner: !!document.querySelector('.bs-web-home-banner'), assetCard: document.querySelectorAll('.bs-shell__settings .bs-asset-card').length, hotspot: !!document.querySelector('.bs-web-course-hotspot') })`)
     if (!webContract.banner || webContract.assetCard !== 1 || !webContract.hotspot) throw new Error(`Web home contract failed: ${JSON.stringify(webContract)}`)
@@ -114,7 +114,7 @@ try {
     await delay(200)
     const courseContract = await evaluate(cdp, `({ selected: document.querySelector('.bs-web-mode__tabs button.is-active')?.textContent, node: document.querySelector('.bs-web-mode__canvas')?.dataset.figmaNode, assetCard: document.querySelectorAll('.bs-shell__settings .bs-asset-card').length })`)
     if (courseContract.node !== '6785:27550' || courseContract.assetCard !== 0) throw new Error(`Web course contract failed: ${JSON.stringify(courseContract)}`)
-    await evaluate(cdp, `document.querySelectorAll('.bs-workspace-nav button')[1]?.click()`)
+    await evaluate(cdp, `(() => { [...document.querySelectorAll('.bs-workspace-nav button')].find((item) => item.textContent.includes('Мобильная версия'))?.click() })()`)
     await delay(200)
   }
 

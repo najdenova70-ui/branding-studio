@@ -51,6 +51,7 @@ export type AssetPath =
   | 'background.webHomeBanner'
   | 'background.navigationDrawer'
   | 'background.authPhone'
+  | 'background.authTablet'
 
 export interface BrandConfig {
   readonly schemaVersion: '2.1-tokens'
@@ -64,6 +65,7 @@ export interface BrandConfig {
       webHomeBanner: AssetSlot
       navigationDrawer: AssetSlot
       authPhone: AssetSlot
+      authTablet: AssetSlot
     }
   }
   /**
@@ -135,6 +137,15 @@ export const DEFAULT_BRAND_CONFIG: BrandConfig = {
         figmaNodeId: '11:18518',
         figmaComponentName: 'Background Authorization / Phone',
       },
+      authTablet: {
+        src: '',
+        format: 'png',
+        intrinsicWidth: 1024,
+        intrinsicHeight: 768,
+        fit: 'cover',
+        figmaNodeId: '11:122133',
+        figmaComponentName: 'Background Authorization / Tablet',
+      },
     },
   },
   colors: { ...DEFAULT_COLORS },
@@ -149,5 +160,25 @@ export function slotAt(cfg: BrandConfig, path: AssetPath): AssetSlot {
     case 'background.webHomeBanner': return cfg.assets.background.webHomeBanner
     case 'background.navigationDrawer': return cfg.assets.background.navigationDrawer
     case 'background.authPhone': return cfg.assets.background.authPhone
+    case 'background.authTablet': return cfg.assets.background.authTablet
+  }
+}
+
+/** Deep clone used by project storage and the runtime context. */
+export function cloneBrandConfig(cfg: BrandConfig): BrandConfig {
+  return {
+    ...cfg,
+    assets: {
+      appIcon: { ...cfg.assets.appIcon },
+      logo: { largeWhiteRu: { ...cfg.assets.logo.largeWhiteRu } },
+      background: {
+        mainBanner: { ...(cfg.assets.background.mainBanner ?? DEFAULT_BRAND_CONFIG.assets.background.mainBanner) },
+        webHomeBanner: { ...(cfg.assets.background.webHomeBanner ?? DEFAULT_BRAND_CONFIG.assets.background.webHomeBanner) },
+        navigationDrawer: { ...cfg.assets.background.navigationDrawer },
+        authPhone: { ...cfg.assets.background.authPhone },
+        authTablet: { ...(cfg.assets.background.authTablet ?? DEFAULT_BRAND_CONFIG.assets.background.authTablet) },
+      },
+    },
+    colors: { ...cfg.colors },
   }
 }

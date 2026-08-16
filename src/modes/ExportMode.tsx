@@ -4,6 +4,30 @@ import { SLIDES } from '../registry/SlideRegistry'
 import SlideCanvas from '../presentation/SlideCanvas'
 import { exportPdf, exportPptx } from '../export/presentationExport'
 import { createShare } from '../share/client'
+import { exportDevelopmentPackage, exportIssues } from '../export/buildAssetService'
+import { useBrandProjects } from '../projects/BrandProjectsContext'
+
+function DevelopmentPackageCard() {
+  const { currentProject, markCurrentExported } = useBrandProjects()
+  const [status, setStatus] = useState('')
+  const [error, setError] = useState('')
+  const issues = exportIssues(currentProject.brandConfig)
+  const run = async (platform?: 'android' | 'ios') => {
+    setError('')
+    try { await exportDevelopmentPackage(currentProject, platform, setStatus); markCurrentExported() }
+    catch (reason) { setError(reason instanceof Error ? reason.message : 'Не удалось собрать пакет.') }
+    finally { setStatus('') }
+  }
+  return (
+    <article className="bs-dev-package">
+      <div className="bs-export__icon">ZIP</div><h2>Пакет для разработки</h2><p>Готовые брендовые ресурсы приложения для Android и iOS.</p>
+      {issues.length > 0 && <details className="bs-export-issues"><summary>Export issues · {issues.length}</summary><ul>{issues.map(({ recipe, status }) => <li key={recipe.id}>{status}: {recipe.masterAssetId}</li>)}</ul></details>}
+      <button className="bs-btn bs-btn--primary" disabled={!!status} onClick={() => void run()}>Скачать пакет</button>
+      <div className="bs-dev-package__platforms"><button className="bs-btn" disabled={!!status} onClick={() => void run('android')}>Скачать Android</button><button className="bs-btn" disabled={!!status} onClick={() => void run('ios')}>Скачать iOS</button></div>
+      {status && <small>{status}…</small>}{error && <div className="bs-warn">{error}</div>}
+    </article>
+  )
+}
 
 export default function ExportMode({ viewer }: { viewer: boolean }) {
   const { config } = useBrand()
@@ -20,6 +44,7 @@ export default function ExportMode({ viewer }: { viewer: boolean }) {
         <article><div className="bs-export__icon">PDF</div><h2>Документ PDF</h2><p>Один файл для отправки и печати.</p><button className="bs-btn bs-btn--primary" disabled={!!status} onClick={() => void run(() => exportPdf(config.displayName, setStatus))}>Скачать PDF</button></article>
         <article><div className="bs-export__icon">PPTX</div><h2>PowerPoint</h2><p>Слайды как изображения — макет не разъедется.</p><button className="bs-btn bs-btn--primary" disabled={!!status} onClick={() => void run(() => exportPptx(config.displayName, setStatus))}>Скачать PPTX</button></article>
         {!viewer && <article><div className="bs-export__icon">↗</div><h2>Публичная демонстрация</h2><p>Ссылка только для просмотра презентации и мобильного прототипа.</p><button className="bs-btn bs-btn--primary" disabled={!!status} onClick={() => void run(async () => { setStatus('Создание ссылки'); const shared = await createShare(config); setShareUrl(`${location.origin}/share/${shared.id}`) })}>Создать ссылку</button></article>}
+        {!viewer && <DevelopmentPackageCard />}
       </div>
       {status && <div className="bs-export__status">{status}…</div>}
       {error && <div className="bs-warn">{error}</div>}

@@ -1,5 +1,5 @@
-import { createContext, useContext, useMemo, useState, type ReactNode } from 'react'
-import { DEFAULT_BRAND_CONFIG, slotAt, type BrandConfig, type AssetPath } from './BrandConfig'
+import { createContext, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
+import { cloneBrandConfig, DEFAULT_BRAND_CONFIG, slotAt, type BrandConfig, type AssetPath } from './BrandConfig'
 import { resolveTokens } from './TokenResolver'
 import { DEFAULT_COLORS, isEditable } from './tokens'
 
@@ -18,38 +18,30 @@ interface BrandContextValue {
 
 const Ctx = createContext<BrandContextValue | null>(null)
 
-/** Клон, сохраняющий readonly-метаданные ассетов. */
-function cloneConfig(cfg: BrandConfig): BrandConfig {
-  return {
-    ...cfg,
-    assets: {
-      appIcon: { ...cfg.assets.appIcon },
-      logo: { largeWhiteRu: { ...cfg.assets.logo.largeWhiteRu } },
-      background: {
-        mainBanner: { ...(cfg.assets.background.mainBanner ?? DEFAULT_BRAND_CONFIG.assets.background.mainBanner) },
-        webHomeBanner: { ...(cfg.assets.background.webHomeBanner ?? DEFAULT_BRAND_CONFIG.assets.background.webHomeBanner) },
-        navigationDrawer: { ...cfg.assets.background.navigationDrawer },
-        authPhone: { ...cfg.assets.background.authPhone },
-      },
-    },
-    colors: { ...cfg.colors },
-  }
-}
-
 function withSlotSrc(cfg: BrandConfig, path: AssetPath, src: string): BrandConfig {
-  const next = cloneConfig(cfg)
+  const next = cloneBrandConfig(cfg)
   slotAt(next, path).src = src
   return next
 }
 
 export function BrandProvider({
-  children, initialConfig = DEFAULT_BRAND_CONFIG, readOnly = false,
+  children, initialConfig = DEFAULT_BRAND_CONFIG, readOnly = false, onConfigChange,
 }: {
   children: ReactNode
   initialConfig?: BrandConfig
   readOnly?: boolean
+  onConfigChange?: (config: BrandConfig) => void
 }) {
-  const [config, setConfig] = useState<BrandConfig>(() => cloneConfig(initialConfig))
+  const [config, setConfig] = useState<BrandConfig>(() => cloneBrandConfig(initialConfig))
+  const onChangeRef = useRef(onConfigChange)
+  const mounted = useRef(false)
+  useEffect(() => { onChangeRef.current = onConfigChange }, [onConfigChange])
+  useEffect(() => {
+    if (!mounted.current) { mounted.current = true; return }
+    onChangeRef.current?.(config)
+  }, [config])
+
+  const change = (updater: (current: BrandConfig) => BrandConfig) => setConfig(updater)
 
   const value = useMemo<BrandContextValue>(() => ({
     config,
@@ -57,22 +49,22 @@ export function BrandProvider({
     readOnly,
     // Reference-стили доступны только для просмотра — запись отклоняется здесь,
     // а не только пряча контрол в UI.
-    setColor: (tokenId, v) => setConfig((c) => {
+    setColor: (tokenId, v) => change((c) => {
       if (readOnly || !isEditable(tokenId)) return c
-      const next = cloneConfig(c)
+      const next = cloneBrandConfig(c)
       next.colors[tokenId] = v
       return next
     }),
-    resetColor: (tokenId) => setConfig((c) => {
+    resetColor: (tokenId) => change((c) => {
       if (readOnly || !isEditable(tokenId)) return c
-      const next = cloneConfig(c)
+      const next = cloneBrandConfig(c)
       next.colors[tokenId] = DEFAULT_COLORS[tokenId]
       return next
     }),
-    resetAllColors: () => !readOnly && setConfig((c) => ({ ...cloneConfig(c), colors: { ...DEFAULT_COLORS } })),
-    setAsset: (path, src) => !readOnly && setConfig((c) => withSlotSrc(c, path, src)),
-    resetAsset: (path) => !readOnly && setConfig((c) => withSlotSrc(c, path, slotAt(DEFAULT_BRAND_CONFIG, path).src)),
-    setDisplayName: (displayName) => !readOnly && setConfig((c) => ({ ...cloneConfig(c), displayName: displayName.slice(0, 30) })),
+    resetAllColors: () => !readOnly && change((c) => ({ ...cloneBrandConfig(c), colors: { ...DEFAULT_COLORS } })),
+    setAsset: (path, src) => !readOnly && change((c) => withSlotSrc(c, path, src)),
+    resetAsset: (path) => !readOnly && change((c) => withSlotSrc(c, path, slotAt(DEFAULT_BRAND_CONFIG, path).src)),
+    setDisplayName: (displayName) => !readOnly && change((c) => ({ ...cloneBrandConfig(c), displayName: displayName.slice(0, 30) })),
   }), [config, readOnly])
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>

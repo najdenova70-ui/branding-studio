@@ -8,6 +8,7 @@ export interface SharedBrand {
 }
 
 async function inlineAsset(src: string): Promise<string> {
+  if (!src) return src
   if (src.startsWith('data:')) return src
   const response = await fetch(src)
   if (!response.ok) throw new Error('Не удалось подготовить бренд-изображения для публикации.')
@@ -22,15 +23,17 @@ async function inlineAsset(src: string): Promise<string> {
 
 async function portableBrand(brand: BrandConfig): Promise<BrandConfig> {
   const next = structuredClone(brand)
-  const [appIcon, logo, authPhone, navigationDrawer, mainBanner, webHomeBanner] = await Promise.all([
+  const [appIcon, logo, authPhone, authTablet, navigationDrawer, mainBanner, webHomeBanner] = await Promise.all([
     inlineAsset(brand.assets.appIcon.src), inlineAsset(brand.assets.logo.largeWhiteRu.src),
-    inlineAsset(brand.assets.background.authPhone.src), inlineAsset(brand.assets.background.navigationDrawer.src),
+    inlineAsset(brand.assets.background.authPhone.src), inlineAsset(brand.assets.background.authTablet.src),
+    inlineAsset(brand.assets.background.navigationDrawer.src),
     inlineAsset(brand.assets.background.mainBanner.src),
     inlineAsset(brand.assets.background.webHomeBanner.src),
   ])
   next.assets.appIcon.src = appIcon
   next.assets.logo.largeWhiteRu.src = logo
   next.assets.background.authPhone.src = authPhone
+  next.assets.background.authTablet.src = authTablet
   next.assets.background.navigationDrawer.src = navigationDrawer
   next.assets.background.mainBanner.src = mainBanner
   next.assets.background.webHomeBanner.src = webHomeBanner

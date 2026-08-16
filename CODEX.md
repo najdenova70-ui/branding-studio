@@ -1,6 +1,6 @@
 # Branding Studio — current project context
 
-Updated: 2026-08-13.
+Updated: 2026-08-15.
 
 ## What this product is
 
@@ -69,6 +69,8 @@ The fixed Figma screens `6137:110093` (`mainBanner`) and `6135:32247` (`mainCont
 The web category contains two local Figma renders: home `4206:201963` (1312×760) and course detail `6785:27550` (1280×768). On home, only the source image of banner instance `6759:41703` is replaceable; its text, controls, placement, and geometry stay fixed. Clicking the fixed “Основы веб-разработки” card opens the course detail view. The course screen has no editable elements.
 
 ## Performance and deployment facts
+
+The editor now also has project-scoped Brand Projects, Android/iOS build-asset previews, and development ZIP export. The preliminary **Планшетная версия** section is functional for master-asset uploads: `background.authTablet` is a PNG master with a confirmed 1024×768 Figma frame and produces the five Android `drawable-sw600dp-*` JPEG outputs from `android-authorization-tablet-*` recipes. The same page exposes the existing shared `background.navigationDrawer` master because Figma defines one navigation background for the application rather than a separate tablet slot. Both assets are stored per Brand Project. The supplied iOS Figma source proves no tablet output sizes, so iOS tablet generation remains disabled until approved Figma recipes are available; do not invent them.
 
 - React 18, strict TypeScript, Vite 8.
 - PDF/PPTX dependencies use dynamic imports and must remain out of the initial bundle.
