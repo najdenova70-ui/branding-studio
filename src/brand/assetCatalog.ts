@@ -49,6 +49,15 @@ export const ASSET_CARDS: AssetCard[] = [
     preview: 'tall',
   },
   {
+    path: 'background.authTablet',
+    label: 'Фон авторизации планшета',
+    description: 'Фоновое изображение экрана авторизации для планшетной версии',
+    status: 'active',
+    provenance: 'figma-annotated',
+    usedBy: ['Планшетная версия · Android'],
+    preview: 'wide',
+  },
+  {
     path: 'logo.largeWhiteRu',
     label: 'Логотип',
     description: 'Большой белый логотип, RU',

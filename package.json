@@ -8,6 +8,7 @@
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
     "test:export": "node tests/browser-export-smoke.mjs",
+    "test:projects": "node tests/browser-project-assets-smoke.mjs",
     "docker:build": "docker compose build",
     "docker:up": "docker compose up -d --build",
     "docker:down": "docker compose down"

@@ -120,14 +120,14 @@ function AssetCardView({ card }: { card: AssetCard }) {
   )
 }
 
-export default function AssetsPanel({ paths }: { paths?: AssetPath[] }) {
+export default function AssetsPanel({ paths, countLabel }: { paths?: AssetPath[]; countLabel?: string }) {
   const active = ASSET_CARDS.filter((card) => card.status === 'active' && (!paths || paths.includes(card.path)))
 
   return (
     <div className="bs-zone">
       <div className="bs-zone__head">
         <h2>Фирменные элементы</h2>
-        <span className="bs-zone__count">{active.length} из {ASSET_CARDS.length} в прототипе</span>
+        <span className="bs-zone__count">{countLabel ?? `${active.length} из ${ASSET_CARDS.length} в прототипе`}</span>
       </div>
 
       {!paths && <BrandIdentity />}
