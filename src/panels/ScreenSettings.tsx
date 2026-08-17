@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import type { AssetPath } from '../brand/BrandConfig'
+import { getWebScreen, type WebScreenId } from '../registry/WebScreenRegistry'
 import { getScreen } from '../registry/ScreenRegistry'
 import type { ScreenId } from '../registry/types'
 import AssetsPanel from './AssetsPanel'
@@ -22,14 +23,14 @@ function Section({ title, count, children, defaultOpen = true }: {
   )
 }
 
-export default function ScreenSettings({ screenId, webScreen }: { screenId: ScreenId; webScreen?: 'home' | 'course' }) {
+export default function ScreenSettings({ screenId, webScreen }: { screenId: ScreenId; webScreen?: WebScreenId }) {
   if (webScreen) {
-    const paths: AssetPath[] = webScreen === 'home' ? ['background.webHomeBanner'] : []
+    const screen = getWebScreen(webScreen)
+    const paths: AssetPath[] = [...screen.assetPaths]
     return (
       <div className="bs-screen-settings">
-        <div className="bs-screen-settings__title"><span>Настройки экрана</span><strong>{webScreen === 'home' ? 'Веб-версия — Главная' : 'Веб-версия — Основы веб-разработки'}</strong></div>
+        <div className="bs-screen-settings__title"><span>Настройки экрана</span><strong>{screen.label}</strong></div>
         <Section title="Изображения и логотипы" count={paths.length}><AssetsPanel paths={paths} /></Section>
-        <Section title="Цвета элементов" count={0}><ColorsPanel tokenIds={[]} /></Section>
       </div>
     )
   }

@@ -17,6 +17,8 @@ import authBgPhoneDefault from '../assets/auth-bg-phone.png'
 import navDrawerBgDefault from '../assets/nav-drawer-bg.png'
 import mainBannerDefault from '../assets/figma-screens/main-banner-default.png'
 import webHomeBannerDefault from '../assets/web-screens/home-banner-default.png'
+import webAuthorizationBackgroundDefault from '../assets/web-authorization/background-authorization-web.png'
+import webAuthorizationLogoDefault from '../assets/web-authorization/logo-authorization-web.svg'
 import logoWhiteRuDefault from '../assets/logo-large-white-ru.svg'
 
 export type AssetFit = 'scale' | 'cover'
@@ -52,6 +54,8 @@ export type AssetPath =
   | 'background.navigationDrawer'
   | 'background.authPhone'
   | 'background.authTablet'
+  | 'web.authorization.background'
+  | 'web.authorization.logo'
 
 export interface BrandConfig {
   readonly schemaVersion: '2.1-tokens'
@@ -66,6 +70,12 @@ export interface BrandConfig {
       navigationDrawer: AssetSlot
       authPhone: AssetSlot
       authTablet: AssetSlot
+    }
+    web: {
+      authorization: {
+        background: AssetSlot
+        logo: AssetSlot
+      }
     }
   }
   /**
@@ -147,6 +157,28 @@ export const DEFAULT_BRAND_CONFIG: BrandConfig = {
         figmaComponentName: 'Background Authorization / Tablet',
       },
     },
+    web: {
+      authorization: {
+        background: {
+          src: webAuthorizationBackgroundDefault,
+          format: 'png',
+          intrinsicWidth: 1024,
+          intrinsicHeight: 1540,
+          fit: 'scale',
+          figmaNodeId: '8467:2264',
+          figmaComponentName: 'Background Authorization / Web',
+        },
+        logo: {
+          src: webAuthorizationLogoDefault,
+          format: 'svg',
+          intrinsicWidth: 800,
+          intrinsicHeight: 600,
+          fit: 'scale',
+          figmaNodeId: '8467:2291',
+          figmaComponentName: 'Logo authorization WEB',
+        },
+      },
+    },
   },
   colors: { ...DEFAULT_COLORS },
 }
@@ -161,6 +193,8 @@ export function slotAt(cfg: BrandConfig, path: AssetPath): AssetSlot {
     case 'background.navigationDrawer': return cfg.assets.background.navigationDrawer
     case 'background.authPhone': return cfg.assets.background.authPhone
     case 'background.authTablet': return cfg.assets.background.authTablet
+    case 'web.authorization.background': return cfg.assets.web.authorization.background
+    case 'web.authorization.logo': return cfg.assets.web.authorization.logo
   }
 }
 
@@ -177,6 +211,12 @@ export function cloneBrandConfig(cfg: BrandConfig): BrandConfig {
         navigationDrawer: { ...cfg.assets.background.navigationDrawer },
         authPhone: { ...cfg.assets.background.authPhone },
         authTablet: { ...(cfg.assets.background.authTablet ?? DEFAULT_BRAND_CONFIG.assets.background.authTablet) },
+      },
+      web: {
+        authorization: {
+          background: { ...(cfg.assets.web?.authorization?.background ?? DEFAULT_BRAND_CONFIG.assets.web.authorization.background) },
+          logo: { ...(cfg.assets.web?.authorization?.logo ?? DEFAULT_BRAND_CONFIG.assets.web.authorization.logo) },
+        },
       },
     },
     colors: { ...cfg.colors },

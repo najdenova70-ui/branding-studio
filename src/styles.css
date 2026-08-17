@@ -535,6 +535,35 @@ code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; fo
 .bs-web-mode__stage { flex: 1; min-height: 0; overflow: auto; padding: 24px; }
 .bs-web-mode__canvas { position: relative; container-type: inline-size; width: 100%; margin: 0 auto; overflow: hidden; border: 1px solid rgba(17,24,39,.12); border-radius: 5px; background: #FFFFFF; box-shadow: 0 18px 44px rgba(17,24,39,.13); }
 .bs-web-mode__canvas img { display: block; width: 100%; height: 100%; object-fit: contain; }
+.bs-web-auth { position: absolute; inset: 0; overflow: hidden; background: #F0F2F5; color: #111827; font-family: Inter, -apple-system, "Segoe UI", sans-serif; }
+.bs-web-auth__header { position: absolute; inset: 0 0 auto; z-index: 2; height: 5.3125cqw; }
+.bs-web-auth__header-logo { position: absolute; left: 1.2315cqw; top: 1.083cqw; width: 8.81cqw; height: 2.5cqw; }
+.bs-web-auth__header-logo img:first-child { position: absolute; left: 0; top: 0; width: 2.523cqw !important; height: 2.523cqw !important; }
+.bs-web-auth__header-logo img:last-child { position: absolute; left: 3.029cqw; top: .506cqw; width: 5.761cqw !important; height: 1.468cqw !important; }
+.bs-web-auth__chooser { position: absolute; left: 13.90625%; top: 24.1667%; width: 35.15625%; height: 52.5%; }
+.bs-web-auth__card { width: 100%; height: 27.03125cqw; padding: 2.5cqw; border-radius: 1.25cqw; background: #FFFFFF; box-shadow: 0 .3125cqw .625cqw rgba(0,0,0,.02), 0 .234cqw .547cqw -.234cqw rgba(0,0,0,.08); }
+.bs-web-auth__card h1 { margin: 0; padding-bottom: 1.25cqw; font-size: 2.1875cqw; font-weight: 600; line-height: 1.2; letter-spacing: -.04156cqw; }
+.bs-web-auth__methods { display: flex; flex-direction: column; gap: .625cqw; }
+.bs-web-auth__method { display: flex; align-items: center; gap: .9375cqw; min-height: 4.25cqw; padding: .9375cqw 1.25cqw; border: .078125cqw solid #F0F2F5; border-radius: .9375cqw; background: #FFFFFF; box-shadow: 0 .3125cqw .625cqw rgba(0,0,0,.02), 0 .234cqw .547cqw -.234cqw rgba(0,0,0,.08); }
+.bs-web-auth__method.is-primary { border-color: rgba(0,0,0,.05); background: #334057; color: #FFFFFF; }
+.bs-web-auth__method span { display: flex; flex: 1; min-width: 0; flex-direction: column; gap: .15625cqw; }
+.bs-web-auth__method strong { font-size: 1.09375cqw; font-weight: 400; line-height: 1.25cqw; letter-spacing: -.00656cqw; }
+.bs-web-auth__method.is-primary strong { font-weight: 500; }
+.bs-web-auth__method small { color: #9CA3B0; font-size: .9375cqw; font-weight: 400; line-height: 1.2; }
+.bs-web-auth__method.is-primary small { color: rgba(255,255,255,.8); }
+.bs-web-auth__method > img { flex: none; width: 1.25cqw !important; height: 1.25cqw !important; }
+.bs-web-auth__signup { display: flex; justify-content: center; gap: .3125cqw; width: 16.09375cqw; height: 1.25cqw; margin: 1.25cqw auto 0; color: #6B7280; font-size: 1.015625cqw; line-height: 1.2; white-space: nowrap; }
+.bs-web-auth__signup strong { color: #334057; font-weight: 500; }
+.bs-web-auth__bottom { position: absolute; left: 1.25%; bottom: 2.222%; display: flex; gap: .78125cqw; height: 2.5cqw; }
+.bs-web-auth__language, .bs-web-auth__support { display: flex; align-items: center; justify-content: center; gap: .46875cqw; height: 2.5cqw; padding: 0 .625cqw; border-radius: .625cqw; background: #FFFFFF; box-shadow: 0 .3125cqw .625cqw rgba(0,0,0,.02); }
+.bs-web-auth__language { width: 4.375cqw; }
+.bs-web-auth__support { width: 13.59375cqw; padding: 0 .9375cqw; }
+.bs-web-auth__language img, .bs-web-auth__support img { width: 1.25cqw !important; height: 1.25cqw !important; }
+.bs-web-auth__language strong, .bs-web-auth__support strong { font-size: 1.015625cqw; font-weight: 500; line-height: 1.2; white-space: nowrap; }
+.bs-web-auth__brand { position: absolute; left: 62.96875%; top: 2.2222%; width: 35.757%; height: 95.5556%; overflow: hidden; border-radius: 1.25cqw; background: #070C1D; }
+.bs-web-auth__background { position: absolute; inset: 0; width: 100% !important; height: 100% !important; object-fit: cover !important; }
+.bs-web-auth__logo-mask { position: absolute; left: 29%; top: 8.4%; width: 43%; height: 12%; background: #070C1D; }
+.bs-web-auth__logo { position: absolute; left: 33.85%; top: 12.55%; width: 32.3% !important; height: 6.1% !important; object-fit: fill !important; }
 .bs-web-home-banner { position: absolute; left: 19.665%; top: 11.053%; width: 54.421%; height: 33.553%; overflow: visible; border-radius: 1.22cqw; color: #FFFFFF; }
 .bs-web-home-banner > img { position: absolute; inset: 0; overflow: hidden; border-radius: 1.22cqw; object-fit: cover; }
 .bs-web-home-banner__shade { position: absolute; inset: 0 40% 0 0; border-radius: 1.22cqw 0 0 1.22cqw; background: linear-gradient(90deg, rgba(0,0,0,.5), transparent); pointer-events: none; }

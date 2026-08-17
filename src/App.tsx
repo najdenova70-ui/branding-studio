@@ -4,6 +4,7 @@ import type { BrandConfig } from './brand/BrandConfig'
 import PresentationMode from './modes/PresentationMode'
 import PrototypeMode from './modes/PrototypeMode'
 import WebMode from './modes/WebMode'
+import type { WebScreenId } from './registry/WebScreenRegistry'
 import WorkspaceNav, { type WorkspaceMode } from './navigation/WorkspaceNav'
 import ScreenSettings from './panels/ScreenSettings'
 import type { ScreenId } from './registry/types'
@@ -23,7 +24,7 @@ const MODE_LABELS: Record<WorkspaceMode, string> = {
 function Shell({ viewer, projectControls = false }: { viewer: boolean; projectControls?: boolean }) {
   const [mode, setMode] = useState<WorkspaceMode>(viewer ? 'presentation' : 'mobile')
   const [screen, setScreen] = useState<ScreenId>('splash')
-  const [webScreen, setWebScreen] = useState<'home' | 'course'>('home')
+  const [webScreen, setWebScreen] = useState<WebScreenId>('authorization')
   const [dark, setDark] = useState(() => localStorage.getItem('constructor-theme') === 'dark')
   const { cssVars, config } = useBrand()
   const showSettings = !viewer && (mode === 'mobile' || mode === 'web')

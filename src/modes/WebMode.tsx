@@ -1,14 +1,7 @@
-import homeWide from '../assets/web-screens/home-wide.webp'
-import courseDetail from '../assets/web-screens/course-detail.webp'
 import { resolveAsset } from '../brand/AssetResolver'
 import { useBrand } from '../brand/BrandContext'
-
-const WEB_SCREENS = [
-  { id: 'home', label: 'Главная', size: '1312 × 760', width: 1312, height: 760, src: homeWide, figmaNodeId: '4206:201963' },
-  { id: 'course', label: 'Основы веб-разработки', size: '1280 × 768', width: 1280, height: 768, src: courseDetail, figmaNodeId: '6785:27550' },
-] as const
-
-export type WebScreenId = (typeof WEB_SCREENS)[number]['id']
+import { getWebScreen, WEB_SCREENS, type WebScreenId } from '../registry/WebScreenRegistry'
+import WebAuthorization from '../screens/WebAuthorization'
 
 export default function WebMode({ selectedId, onSelectedId }: {
   selectedId: WebScreenId
@@ -16,7 +9,7 @@ export default function WebMode({ selectedId, onSelectedId }: {
 }) {
   const { config } = useBrand()
   const banner = resolveAsset(config.assets.background.webHomeBanner)
-  const selected = WEB_SCREENS.find((screen) => screen.id === selectedId) ?? WEB_SCREENS[0]
+  const selected = getWebScreen(selectedId)
 
   return (
     <div className="bs-web-mode">
@@ -29,7 +22,9 @@ export default function WebMode({ selectedId, onSelectedId }: {
       </div>
       <div className="bs-web-mode__stage">
         <div className="bs-web-mode__canvas" style={{ aspectRatio: `${selected.width} / ${selected.height}`, maxWidth: selected.width }} data-figma-node={selected.figmaNodeId}>
-          <img src={selected.src} alt={`Веб-экран «${selected.label}»`} />
+          {selected.kind === 'authorization'
+            ? <WebAuthorization />
+            : <img src={selected.src} alt={`Веб-экран «${selected.label}»`} />}
           {selected.id === 'home' && (
             <>
               <div className="bs-web-home-banner">
@@ -42,7 +37,7 @@ export default function WebMode({ selectedId, onSelectedId }: {
                 </div>
                 <i className="is-left">‹</i><i className="is-right">›</i>
               </div>
-              <button className="bs-web-course-hotspot" type="button" onClick={() => onSelectedId('course')} aria-label="Открыть курс «Основы веб-разработки»" />
+              <button className="bs-web-course-hotspot" type="button" onClick={() => onSelectedId('course')} aria-label="Открыть экран курса" />
             </>
           )}
         </div>

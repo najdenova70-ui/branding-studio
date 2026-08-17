@@ -5,10 +5,12 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev:api": "node server/server.mjs",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
     "test:export": "node tests/browser-export-smoke.mjs",
     "test:projects": "node tests/browser-project-assets-smoke.mjs",
+    "test:web-auth": "node tests/browser-web-authorization-smoke.mjs",
     "docker:build": "docker compose build",
     "docker:up": "docker compose up -d --build",
     "docker:down": "docker compose down"

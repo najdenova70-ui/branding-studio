@@ -19,6 +19,8 @@ export const MOBILE_APP_DEFAULT_TEMPLATE: BrandTemplate = {
     'background.navigationDrawer',
     'background.authPhone',
     'background.authTablet',
+    'web.authorization.background',
+    'web.authorization.logo',
   ],
   createBrandConfig(projectId, projectName) {
     const config = cloneBrandConfig(DEFAULT_BRAND_CONFIG)

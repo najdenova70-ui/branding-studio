@@ -1,5 +1,13 @@
 export type WorkspaceMode = 'projects' | 'web' | 'mobile' | 'tablet' | 'presentation' | 'buildAssets' | 'metadata' | 'export'
 
+// Future capabilities stay routed and implemented; toggle these flags to restore
+// their entries in the primary workspace navigation.
+export const NAVIGATION_FEATURES = {
+  showFutureCapabilities: false,
+}
+
+const FUTURE_NAV_ITEMS = new Set<WorkspaceMode>(['tablet', 'metadata'])
+
 const ITEMS: { id: WorkspaceMode; icon: string; label: string; note: string }[] = [
   { id: 'projects', icon: '▦', label: 'Проекты', note: 'Бренды клиентов' },
   { id: 'web', icon: '◫', label: 'Веб-версия', note: '2 экрана' },
@@ -22,7 +30,10 @@ export default function WorkspaceNav({ mode, onChange, viewer }: {
     <div className="bs-workspace-nav">
       <div className="bs-workspace-nav__brand"><span className="bs-workspace-nav__mark"><img src={appIcon.src} alt="" /></span><div><strong>Конструктор экранов</strong><small>{viewer ? 'Демонстрация' : 'Рабочее пространство'}</small></div></div>
       <nav>
-        {ITEMS.filter((item) => !viewer || ['mobile', 'presentation', 'export'].includes(item.id)).map((item) => (
+        {ITEMS.filter((item) => {
+          if (FUTURE_NAV_ITEMS.has(item.id) && !NAVIGATION_FEATURES.showFutureCapabilities) return false
+          return !viewer || ['mobile', 'presentation', 'export'].includes(item.id)
+        }).map((item) => (
           <button key={item.id} className={mode === item.id ? 'is-active' : ''} onClick={() => onChange(item.id)}>
             <span className="bs-workspace-nav__icon">{item.icon}</span>
             <span><strong>{item.label}</strong><small>{item.note}</small></span>

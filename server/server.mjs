@@ -4,7 +4,7 @@ import { mkdir, readFile, rename, writeFile } from 'node:fs/promises'
 import { dirname, join } from 'node:path'
 
 const port = Number(process.env.PORT || 8080)
-const storeFile = process.env.SHARE_STORE_FILE || '/data/shares.json'
+const storeFile = process.env.SHARE_STORE_FILE || join(process.cwd(), 'server/data/shares.json')
 const ttlDays = Math.max(1, Math.min(365, Number(process.env.SHARE_TTL_DAYS || 30)))
 const maxRecords = Math.max(100, Math.min(20_000, Number(process.env.SHARE_MAX_RECORDS || 2000)))
 const maxBody = 12 * 1024 * 1024

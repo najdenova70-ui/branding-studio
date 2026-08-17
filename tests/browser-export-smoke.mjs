@@ -100,20 +100,24 @@ try {
     settings: !!document.querySelector('.bs-shell__settings'),
     oldRows: !!document.querySelector('.bs-proto__bar'),
   })`)
-  if (!editorContract.settings || editorContract.oldRows || editorContract.nav.length !== 8) throw new Error(`Editor contract failed: ${JSON.stringify(editorContract)}`)
+  if (!editorContract.settings || editorContract.oldRows || editorContract.nav.length !== 6) throw new Error(`Editor contract failed: ${JSON.stringify(editorContract)}`)
   trace('editor contract')
 
   if (webEvidence) {
     await evaluate(cdp, `(() => { [...document.querySelectorAll('.bs-workspace-nav button')].find((item) => item.textContent.includes('Веб-версия'))?.click() })()`)
     await delay(300)
-    const webContract = await evaluate(cdp, `({ banner: !!document.querySelector('.bs-web-home-banner'), assetCard: document.querySelectorAll('.bs-shell__settings .bs-asset-card').length, hotspot: !!document.querySelector('.bs-web-course-hotspot') })`)
-    if (!webContract.banner || webContract.assetCard !== 1 || !webContract.hotspot) throw new Error(`Web home contract failed: ${JSON.stringify(webContract)}`)
+    const authorizationContract = await evaluate(cdp, `({ authorization: !!document.querySelector('.bs-web-auth'), node: document.querySelector('.bs-web-mode__canvas')?.dataset.figmaNode, assetCard: document.querySelectorAll('.bs-shell__settings .bs-asset-card').length })`)
+    if (!authorizationContract.authorization || authorizationContract.node !== '8470:8952' || authorizationContract.assetCard !== 2) throw new Error(`Web authorization contract failed: ${JSON.stringify(authorizationContract)}`)
     const screenshot = await cdp.send('Page.captureScreenshot', { format: 'png', fromSurface: true })
     await writeFile(webEvidence, Buffer.from(screenshot.data, 'base64'))
+    await evaluate(cdp, `([...document.querySelectorAll('.bs-web-mode__tabs button')].find((item) => item.textContent.includes('Р“Р»Р°РІРЅР°СЏ')))?.click()`)
+    await delay(200)
+    const webContract = await evaluate(cdp, `({ banner: !!document.querySelector('.bs-web-home-banner'), assetCard: document.querySelectorAll('.bs-shell__settings .bs-asset-card').length, hotspot: !!document.querySelector('.bs-web-course-hotspot') })`)
+    if (!webContract.banner || webContract.assetCard !== 1 || !webContract.hotspot) throw new Error(`Web home contract failed: ${JSON.stringify(webContract)}`)
     await evaluate(cdp, `document.querySelector('.bs-web-course-hotspot')?.click()`)
     await delay(200)
     const courseContract = await evaluate(cdp, `({ selected: document.querySelector('.bs-web-mode__tabs button.is-active')?.textContent, node: document.querySelector('.bs-web-mode__canvas')?.dataset.figmaNode, assetCard: document.querySelectorAll('.bs-shell__settings .bs-asset-card').length })`)
-    if (courseContract.node !== '6785:27550' || courseContract.assetCard !== 0) throw new Error(`Web course contract failed: ${JSON.stringify(courseContract)}`)
+    if (courseContract.node !== '8444:23884' || courseContract.assetCard !== 0) throw new Error(`Web course contract failed: ${JSON.stringify(courseContract)}`)
     await evaluate(cdp, `(() => { [...document.querySelectorAll('.bs-workspace-nav button')].find((item) => item.textContent.includes('Мобильная версия'))?.click() })()`)
     await delay(200)
   }
@@ -197,6 +201,10 @@ try {
   const pdf = await readFile(pdfPath)
   if (pdf.subarray(0, 4).toString() !== '%PDF') throw new Error('Generated PDF is invalid.')
 
+  for (let attempt = 0; attempt < 100; attempt += 1) {
+    if (await evaluate(cdp, `!document.querySelector('.bs-export__status')`)) break
+    await delay(100)
+  }
   await clickDownload('Создать ссылку')
   let shareUrl = ''
   for (let attempt = 0; attempt < 200; attempt += 1) {
